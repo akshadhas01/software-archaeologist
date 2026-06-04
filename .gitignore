@@ -1,0 +1,14 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# IntelliJ
+.idea/
+*.iml
+
+# Environment
+.env
+
+# Frontend
+node_modules/
