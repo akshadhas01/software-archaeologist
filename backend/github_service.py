@@ -44,3 +44,12 @@ def get_health_score(owner, repo):
         score += 20
 
     return min(score, 100)
+
+
+def get_contributors(owner, repo):
+
+    url = f"https://api.github.com/repos/{owner}/{repo}/contributors"
+
+    response = requests.get(url)
+
+    return response.json()

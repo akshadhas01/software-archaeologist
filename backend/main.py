@@ -3,7 +3,8 @@ from github_service import (
     get_repo,
     get_languages,
     get_readme,
-    get_health_score
+    get_health_score,
+    get_contributors
 )
 
 app = FastAPI()
@@ -48,3 +49,11 @@ def health(owner: str, repo: str):
     return {
         "health_score": get_health_score(owner, repo)
     }
+
+
+@app.get("/contributors/{owner}/{repo}")
+def contributors(owner: str, repo: str):
+
+    data = get_contributors(owner, repo)
+
+    return data[:10]
