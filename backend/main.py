@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from github_service import (
     get_repo,
     get_languages,
-    get_readme
+    get_readme,
+    get_health_score
 )
 
 app = FastAPI()
@@ -38,4 +39,12 @@ def languages(owner: str, repo: str):
 def readme(owner: str, repo: str):
     return {
         "readme": get_readme(owner, repo)
+    }
+
+
+@app.get("/health/{owner}/{repo}")
+def health(owner: str, repo: str):
+
+    return {
+        "health_score": get_health_score(owner, repo)
     }

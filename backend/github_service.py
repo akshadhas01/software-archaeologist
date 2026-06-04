@@ -25,4 +25,22 @@ def get_readme(owner, repo):
         data["content"]
     ).decode("utf-8")
 
-    return content[:5000]
+    return content[:2000]
+
+
+def get_health_score(owner, repo):
+
+    repo_data = get_repo(owner, repo)
+
+    score = 50
+
+    if repo_data["stargazers_count"] > 1000:
+        score += 20
+
+    if repo_data["forks_count"] > 100:
+        score += 10
+
+    if repo_data["open_issues_count"] < 100:
+        score += 20
+
+    return min(score, 100)
