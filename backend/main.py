@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from github_service import (
+from services.github_service import (
     get_repo,
     get_languages,
     get_readme,
