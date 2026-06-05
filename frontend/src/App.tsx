@@ -1,122 +1,89 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [owner, setOwner] = useState("");
+  const [repo, setRepo] = useState("");
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  const analyzeRepository = async () => {
+    if (!owner || !repo) {
+      alert("Enter owner and repository name");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/summary/${owner}/${repo}`
+      );
+
+      const result = await response.json();
+
+      setData(result);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to fetch repository");
+    }
+
+    setLoading(false);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
+    <div className="container">
+      <h1>Software Archaeologist</h1>
+
+      <div className="form">
+        <input
+          placeholder="Repository Owner (e.g. facebook)"
+          value={owner}
+          onChange={(e) => setOwner(e.target.value)}
+        />
+
+        <input
+          placeholder="Repository Name (e.g. react)"
+          value={repo}
+          onChange={(e) => setRepo(e.target.value)}
+        />
+
+        <button onClick={analyzeRepository}>
+          {loading ? "Analyzing..." : "Analyze Repository"}
         </button>
-      </section>
+      </div>
 
-      <div className="ticks"></div>
+      {data && (
+        <div className="results">
+          <h2>{data.repository}</h2>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+          <p>{data.description}</p>
+
+          <div className="card">
+            <strong>Stars:</strong> {data.stars}
+          </div>
+
+          <div className="card">
+            <strong>Forks:</strong> {data.forks}
+          </div>
+
+          <div className="card">
+            <strong>Health Score:</strong> {data.health_score}
+          </div>
+
+          <div className="card">
+            <strong>Languages:</strong>
+
+            <ul>
+              {data.top_languages.map((lang: string) => (
+                <li key={lang}>{lang}</li>
+              ))}
+            </ul>
+          </div>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
