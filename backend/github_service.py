@@ -53,3 +53,19 @@ def get_contributors(owner, repo):
     response = requests.get(url)
 
     return response.json()
+
+
+def build_summary(owner, repo):
+
+    repo_data = get_repo(owner, repo)
+
+    languages = get_languages(owner, repo)
+
+    return {
+        "repository": repo_data["name"],
+        "description": repo_data["description"],
+        "stars": repo_data["stargazers_count"],
+        "forks": repo_data["forks_count"],
+        "health_score": get_health_score(owner, repo),
+        "top_languages": list(languages.keys())[:5]
+    }

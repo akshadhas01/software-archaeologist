@@ -4,7 +4,8 @@ from github_service import (
     get_languages,
     get_readme,
     get_health_score,
-    get_contributors
+    get_contributors,
+    build_summary
 )
 
 app = FastAPI()
@@ -57,3 +58,9 @@ def contributors(owner: str, repo: str):
     data = get_contributors(owner, repo)
 
     return data[:10]
+
+
+@app.get("/summary/{owner}/{repo}")
+def summary(owner: str, repo: str):
+
+    return build_summary(owner, repo)
