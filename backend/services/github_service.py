@@ -25,7 +25,7 @@ def get_readme(owner, repo):
         data["content"]
     ).decode("utf-8")
 
-    return content[:2000]
+    return content[:3000]
 
 
 def get_health_score(owner, repo):
@@ -68,4 +68,40 @@ def build_summary(owner, repo):
         "forks": repo_data["forks_count"],
         "health_score": get_health_score(owner, repo),
         "top_languages": list(languages.keys())[:5]
+    }
+
+
+def build_report(owner, repo):
+
+    repo_data = get_repo(owner, repo)
+    languages = get_languages(owner, repo)
+
+    stars = repo_data["stargazers_count"]
+
+    top_language = (
+        list(languages.keys())[0]
+        if languages
+        else "Unknown"
+    )
+
+    if stars > 100000:
+        community_size = "Very Large"
+    elif stars > 10000:
+        community_size = "Large"
+    else:
+        community_size = "Growing"
+
+    if len(languages) >= 5:
+        difficulty = "Advanced"
+    elif len(languages) >= 3:
+        difficulty = "Intermediate"
+    else:
+        difficulty = "Beginner Friendly"
+
+    return {
+        "difficulty": difficulty,
+        "community_size": community_size,
+        "top_language": top_language,
+        "recommended_starting_point": "README.md",
+        "repository_type": "Open Source Project"
     }

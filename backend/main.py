@@ -7,7 +7,8 @@ from services.github_service import (
     get_readme,
     get_health_score,
     get_contributors,
-    build_summary
+    build_summary,
+    build_report
 )
 
 app = FastAPI()
@@ -76,3 +77,9 @@ def contributors(owner: str, repo: str):
 def summary(owner: str, repo: str):
 
     return build_summary(owner, repo)
+
+
+@app.get("/report/{owner}/{repo}")
+def report(owner: str, repo: str):
+
+    return build_report(owner, repo)
